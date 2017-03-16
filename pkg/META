@@ -1,0 +1,4 @@
+description = "Composition Inlining"
+version = "%%VERSION_NUM%%"
+requires = ""
+ppx = "./ppx_compose"
