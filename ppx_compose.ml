@@ -58,7 +58,7 @@ let rewrite_expr mapper e =
       if is_composition e then
         let name = fresh_var_for e in
         let x = {txt = Lident name; loc = e.pexp_loc} in
-        let ex = reduce_compose e (Exp.ident x) in
+        let ex = mapper.expr mapper (reduce_compose e (Exp.ident x)) in
         Exp.fun_ ~loc Nolabel None (Pat.var {txt = name; loc = e.pexp_loc}) ex
       else
         default_mapper.expr mapper e)
