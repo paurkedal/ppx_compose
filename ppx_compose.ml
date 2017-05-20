@@ -14,6 +14,10 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+open Migrate_parsetree
+open Ast_404
+let ocaml_version = Versions.ocaml_404
+
 open Ast_mapper
 open Ast_helper
 open Asttypes
@@ -63,6 +67,6 @@ let rewrite_expr mapper e =
       else
         default_mapper.expr mapper e)
 
-let compose_mapper argv = {default_mapper with expr = rewrite_expr}
+let compose_mapper _config _cookies = {default_mapper with expr = rewrite_expr}
 
-let () = register "compose" compose_mapper
+let () = Driver.register ~name:"ppx_compose" ocaml_version compose_mapper
