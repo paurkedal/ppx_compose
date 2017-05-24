@@ -5,7 +5,11 @@ open Topkg
 
 let licenses = List.map Pkg.std_file ["COPYING.LESSER"; "COPYING"]
 
-let () = Pkg.describe ~licenses "ppx_compose" @@ fun c ->
+(* Linting of META disabled due to presumed spurious complaints about the
+ * ppx_driver predicate in the plugin assignments. *)
+let metas = [Pkg.meta_file ~lint:false "pkg/META"]
+
+let () = Pkg.describe ~licenses ~metas "ppx_compose" @@ fun c ->
   Ok [
     Pkg.lib "ppx_compose.cmo";
     Pkg.lib "ppx_compose.cmx";
