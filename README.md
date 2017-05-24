@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/paurkedal/ppx_compose.svg?branch=master)](https://travis-ci.org/mirage/ppx_compose)
+[![Build Status](https://travis-ci.org/paurkedal/ppx_compose.svg?branch=master)](https://travis-ci.org/paurkedal/ppx_compose)
 
 ## `ppx_compose` - Inlined Function Composition
 
