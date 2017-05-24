@@ -1,16 +1,16 @@
-# `ppx_compose` - Composition Inlining for OCaml
+[![Build Status](https://travis-ci.org/paurkedal/ppx_compose.svg?branch=master)](https://travis-ci.org/mirage/ppx_compose)
 
-## Synopsis
+## `ppx_compose` - Inlined Function Composition
 
-This is a very simple syntax extension which rewrites code containing
-compositions into composition-free code, effectively inlining the
+`ppx_compose` is a simple syntax extension which rewrites code containing
+function compositions into composition-free code, effectively inlining the
 composition operators.  The following two operators are supported
 ```ocaml
 let (%) g f x = g (f x)
 let (%>) f g x = g (f x)
 ```
-These definitions are not provided, so partial applications of `(%)` and
-`(%>)` will be undefined unless you provide the definitions.
+Corresponding definitions are not provided, so partial applications of `(%)`
+and `(%>)` will be undefined unless you provide the definitions.
 
 The following rewrites are done:
 
