@@ -11,5 +11,6 @@ let () = Pkg.describe ~licenses "ppx_compose" @@ fun c ->
     Pkg.lib "ppx_compose.cmx";
     Pkg.lib "ppx_compose.o";
     Pkg.libexec ~dst:"ppx_compose" "ppx_compose_main";
+    Pkg.mllib "ppx_compose_runtime.mllib";
     Pkg.test "test_compose";
   ]

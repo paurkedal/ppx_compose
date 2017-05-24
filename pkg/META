@@ -6,3 +6,11 @@ archive(byte,ppx_driver) = "ppx_compose.cmo"
 archive(native,ppx_driver) = "ppx_compose.cmx"
 plugin(byte,ppx_driver) = "ppx_compose.cma"
 plugin(native,ppx_driver) = "ppx_compose.cmxs"
+
+package "runtime" (
+  version = "%%VERSION_NUM%%"
+  description = "Non-inlined operators to supplement ppx_compose."
+  archive(byte) = "ppx_compose_runtime.cma"
+  archive(native) = "ppx_compose_runtime.cmxa"
+  exists_if = "ppx_compose_runtime.cma"
+)

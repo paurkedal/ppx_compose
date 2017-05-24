@@ -14,27 +14,5 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Printf
-
-(* These two should produce the same code when run though dumpast: *)
-
-let stringify =
-  List.map (string_of_int % fst)
-    %> String.concat ";"
-    %> sprintf "[%s]"
-
-let stringify' xs =
-  sprintf "[%s]"
-    (String.concat ";"
-      (List.map (fun x -> string_of_int (fst x)) xs))
-
-let apply f x = f x
-
-let () = assert (stringify [17, "a"; 20, "b"; 36, "c"] = "[17;20;36]")
-
-let () =
-  let open Compose in
-  let double_succ = apply (%) (( * ) 2) succ in
-  let succ_double = apply (%>) (( * ) 2) succ in
-  assert (double_succ 12 = 26);
-  assert (succ_double 12 = 25)
+let (%) g f x = g (f x)
+let (%>) f g x = g (f x)
