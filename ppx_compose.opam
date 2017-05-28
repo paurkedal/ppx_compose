@@ -7,9 +7,12 @@ bug-reports: "https://github.com/paurkedal/ppx_compose/issues"
 dev-repo: "https://github.com/paurkedal/ppx_compose.git"
 license: "LGPL-3 with OCaml linking exception"
 
-build: ["ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%"]
+build: [["jbuilder" "build" "-p" name "-j" jobs]]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
+
 depends: [
-  "ocaml-migrate-parsetree"
   "ocamlbuild" {build}
   "topkg" {build}
+  "topkg-jbuilder" {build}
+  "ocaml-migrate-parsetree"
 ]

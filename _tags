@@ -1,3 +1,0 @@
-true: bin_annot
-<ppx_*>: package(ocaml-migrate-parsetree)
-<test_*>: ppx(./ppx_compose_main.native --as-ppx)
