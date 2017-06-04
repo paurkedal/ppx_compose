@@ -26,7 +26,7 @@ open Longident
 
 (* Is there an existing function? *)
 let fresh_var_for e =
-  Printf.sprintf "_x%d" e.pexp_loc.Location.loc_start.Lexing.pos_cnum
+  Printf.sprintf "_ppx_compose_%d" e.pexp_loc.Location.loc_start.Lexing.pos_cnum
 
 let apply ~loc f xs =
   (match f.pexp_desc with
