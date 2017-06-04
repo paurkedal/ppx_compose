@@ -38,9 +38,9 @@ let apply ~loc f xs =
 let rec reduce_compose h x =
   let loc = h.pexp_loc in
   (match h.pexp_desc with
-   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%"}},
+   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%"; _}; _},
                  [(Nolabel, g); (Nolabel, f)])
-   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%>"}},
+   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%>"; _}; _},
                  [(Nolabel, f); (Nolabel, g)]) ->
       let fx = reduce_compose f x in
       reduce_compose g fx
@@ -49,7 +49,7 @@ let rec reduce_compose h x =
 
 let is_composition e =
   (match e.pexp_desc with
-   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident ("%" | "%>")}},
+   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident ("%" | "%>"); _}; _},
                  [(Nolabel, _); (Nolabel, _)]) -> true
    | _ -> false)
 
