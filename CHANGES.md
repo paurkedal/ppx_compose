@@ -1,5 +1,9 @@
 # Changes
 
+## v0.0.3 - 2017-06-04
+
+- Internal improvements.
+
 ## v0.0.2 - 2017-05-24
 
 - Use ocaml-migrate-parsetree.
