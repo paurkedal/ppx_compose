@@ -29,3 +29,15 @@ h % g % f ==> (fun x -> h (f (g x)))
 h % (g % f) ==> (fun x -> h (f (g x)))
 (g % f) (h % h) ==> g (f (fun x -> h (h x)))
 ```
+
+### Is It Needed?
+
+Recent flambda-enabled compilers can inline the following alternative
+definitions of the composition operators [[1]]:
+```ocaml
+let (%) g f = (); fun x -> g (f x)
+let (%>) f g = (); fun x -> g (f x)
+```
+so this syntax extension will likely be retired at some point.
+
+[1]: https://discuss.ocaml.org/t/ann-ppx-compose-0-0-3/345
