@@ -36,7 +36,6 @@ let apply ~loc f xs =
       Exp.apply ~loc f xs)
 
 let rec reduce_compose h x =
-  let loc = h.pexp_loc in
   (match h.pexp_desc with
    | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%"; _}; _},
                  [(Nolabel, g); (Nolabel, f)])
@@ -45,7 +44,7 @@ let rec reduce_compose h x =
       let fx = reduce_compose f x in
       reduce_compose g fx
    | _ ->
-      (apply ~loc h [Nolabel, x]))
+      (apply ~loc:h.pexp_loc h [Nolabel, x]))
 
 let is_composition e =
   (match e.pexp_desc with
@@ -54,16 +53,17 @@ let is_composition e =
    | _ -> false)
 
 let rewrite_expr mapper e =
-  let loc = e.pexp_loc in
   (match e.pexp_desc with
    | Pexp_apply (h, ((Nolabel, x) :: xs)) when is_composition h ->
-      mapper.expr mapper (apply ~loc (reduce_compose h x) xs)
+      mapper.expr mapper (apply ~loc:e.pexp_loc (reduce_compose h x) xs)
    | _ ->
       if is_composition e then
         let name = fresh_var_for e in
-        let x = {txt = Lident name; loc = e.pexp_loc} in
-        let ex = mapper.expr mapper (reduce_compose e (Exp.ident x)) in
-        Exp.fun_ ~loc Nolabel None (Pat.var {txt = name; loc = e.pexp_loc}) ex
+        let pat = Pat.var ~loc:e.pexp_loc {txt = name; loc = e.pexp_loc} in
+        let lid = {txt = Lident name; loc = e.pexp_loc} in
+        let arg = Exp.ident ~loc:e.pexp_loc lid in
+        let body = mapper.expr mapper (reduce_compose e arg) in
+        Exp.fun_ ~loc:e.pexp_loc Nolabel None pat body
       else
         default_mapper.expr mapper e)
 
