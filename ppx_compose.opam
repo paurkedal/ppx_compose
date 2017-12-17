@@ -12,8 +12,6 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "jbuilder" {build & >="1.0+beta7"}
-  "topkg" {build}
-  "topkg-jbuilder" {build}
   "ocaml-migrate-parsetree"
 ]
 available: [ocaml-version >= "4.02.3"]
