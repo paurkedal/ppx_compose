@@ -1,0 +1,3 @@
+#ppx "_build/default/.ppx/ppx_compose/ppx.exe --as-ppx"
+#directory "_build/default"
+#load "ppx_compose_runtime.cma"
