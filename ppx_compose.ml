@@ -46,26 +46,33 @@ let rec reduce_compose h x =
    | _ ->
       (apply ~loc:h.pexp_loc h [Nolabel, x]))
 
-let is_composition e =
+let classify e =
   (match e.pexp_desc with
-   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident ("%" | "%>"); _}; _},
-                 [(Nolabel, _); (Nolabel, _)]) -> true
-   | _ -> false)
+   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%"; _}; _},
+                 [(Nolabel, _); (Nolabel, _)]) -> `Compose
+   | Pexp_apply ({pexp_desc = Pexp_ident {txt = Lident "%>"; _}; _},
+                 [(Nolabel, _); (Nolabel, _)]) -> `Compose_fw
+   | _ -> `Other)
+
+let eta_expand_composition ~is_fw mapper e =
+  let name = fresh_var_for e in
+  let var_loc =
+    if is_fw then {e.pexp_loc with loc_end = e.pexp_loc.loc_start}
+             else {e.pexp_loc with loc_start = e.pexp_loc.loc_end} in
+  let pat = Pat.var ~loc:var_loc {txt = name; loc = var_loc} in
+  let arg = Exp.ident ~loc:var_loc {txt = Lident name; loc = var_loc} in
+  let body = mapper.expr mapper (reduce_compose e arg) in
+  Exp.fun_ ~loc:e.pexp_loc Nolabel None pat body
 
 let rewrite_expr mapper e =
   (match e.pexp_desc with
-   | Pexp_apply (h, ((Nolabel, x) :: xs)) when is_composition h ->
+   | Pexp_apply (h, ((Nolabel, x) :: xs)) when classify h <> `Other ->
       mapper.expr mapper (apply ~loc:e.pexp_loc (reduce_compose h x) xs)
    | _ ->
-      if is_composition e then
-        let name = fresh_var_for e in
-        let pat = Pat.var ~loc:e.pexp_loc {txt = name; loc = e.pexp_loc} in
-        let lid = {txt = Lident name; loc = e.pexp_loc} in
-        let arg = Exp.ident ~loc:e.pexp_loc lid in
-        let body = mapper.expr mapper (reduce_compose e arg) in
-        Exp.fun_ ~loc:e.pexp_loc Nolabel None pat body
-      else
-        default_mapper.expr mapper e)
+      (match classify e with
+       | `Compose -> eta_expand_composition ~is_fw:false mapper e
+       | `Compose_fw -> eta_expand_composition ~is_fw:true mapper e
+       | `Other -> default_mapper.expr mapper e))
 
 let compose_mapper _config _cookies = {default_mapper with expr = rewrite_expr}
 
