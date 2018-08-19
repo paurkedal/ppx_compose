@@ -6,11 +6,11 @@ services:
 
 env:
   matrix:
-    - IMAGE_NAME=ocaml/opam:alpine_ocaml-4.02.3
-    - IMAGE_NAME=ocaml/opam:alpine_ocaml-4.06.0_flambda
+    - IMAGE_NAME=ocaml/opam2:4.03
+    - IMAGE_NAME=ocaml/opam2:4.07
 
 before_install:
   - docker pull $IMAGE_NAME
 
 script:
-  - docker run --privileged -v `pwd`:/mnt:ro $IMAGE_NAME /mnt/pkg/ci.sh
+  - docker run --privileged -v `pwd`:/mnt:ro $IMAGE_NAME /mnt/.travis.sh
