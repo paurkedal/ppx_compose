@@ -11,13 +11,8 @@
   (wrapped false)
   (modules compose))
 
-(executable
+(test
   (name test_compose)
   (modules test_compose)
   (libraries ppx_compose_runtime)
   (preprocess (pps ppx_compose)))
-
-(alias
-  (name runtest)
-  (deps (:dep test_compose.exe))
-  (action (run %{dep})))
