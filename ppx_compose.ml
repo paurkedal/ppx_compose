@@ -15,8 +15,8 @@
  *)
 
 open Migrate_parsetree
-open Ast_404
-let ocaml_version = Versions.ocaml_404
+open Ast_410
+let ocaml_version = Versions.ocaml_410
 
 open Ast_mapper
 open Ast_helper
