@@ -1,5 +1,3 @@
-# Changes
-
 ## v0.1.0 - 2019-12-19
 
 - Upgrade to OCaml AST 4.10.
