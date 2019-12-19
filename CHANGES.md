@@ -1,5 +1,10 @@
 # Changes
 
+## v0.1.0 - 2019-12-19
+
+- Upgrade to OCaml AST 4.10.
+- Switch to dune.
+
 ## v0.0.4 - 2017-12-17
 
 - Add missing location information in generated code.
