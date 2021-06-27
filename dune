@@ -3,7 +3,7 @@
   (public_name ppx_compose)
   (kind ppx_rewriter)
   (modules ppx_compose)
-  (libraries ocaml-migrate-parsetree))
+  (libraries ppxlib))
 
 (library
   (name ppx_compose_runtime)

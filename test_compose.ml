@@ -1,4 +1,4 @@
-(* Copyright (C) 2017  Petter A. Urkedal <paurkedal@gmail.com>
+(* Copyright (C) 2017--2021  Petter A. Urkedal <paurkedal@gmail.com>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -37,4 +37,7 @@ let () =
   let double_succ = apply (%) (( * ) 2) succ in
   let succ_double = apply (%>) (( * ) 2) succ in
   assert (double_succ 12 = 26);
-  assert (succ_double 12 = 25)
+  assert (succ_double 12 = 25);
+  let post_succ = (%) Int.succ in
+  let succ_abs = post_succ Int.abs in
+  assert (succ_abs (-12) = 13)

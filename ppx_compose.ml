@@ -1,4 +1,4 @@
-(* Copyright (C) 2017  Petter A. Urkedal <paurkedal@gmail.com>
+(* Copyright (C) 2017--2021  Petter A. Urkedal <paurkedal@gmail.com>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -14,15 +14,8 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-open Migrate_parsetree
-open Ast_410
-let ocaml_version = Versions.ocaml_410
-
-open Ast_mapper
-open Ast_helper
-open Asttypes
-open Parsetree
-open Longident
+open Ppxlib
+open Ast_builder.Default
 
 (* Is there an existing function? *)
 let fresh_var_for e =
@@ -31,9 +24,9 @@ let fresh_var_for e =
 let apply ~loc f xs =
   (match f.pexp_desc with
    | Pexp_apply (f', xs') ->
-      Exp.apply ~loc f' (List.append xs' xs)
+      pexp_apply ~loc f' (List.append xs' xs)
    | _ ->
-      Exp.apply ~loc f xs)
+      pexp_apply ~loc f xs)
 
 let rec reduce_compose h x =
   (match h.pexp_desc with
@@ -54,26 +47,29 @@ let classify e =
                  [(Nolabel, _); (Nolabel, _)]) -> `Compose_fw
    | _ -> `Other)
 
-let eta_expand_composition ~is_fw mapper e =
+let eta_expand_composition ~is_fw e =
   let name = fresh_var_for e in
   let var_loc =
     if is_fw then {e.pexp_loc with loc_end = e.pexp_loc.loc_start}
              else {e.pexp_loc with loc_start = e.pexp_loc.loc_end} in
-  let pat = Pat.var ~loc:var_loc {txt = name; loc = var_loc} in
-  let arg = Exp.ident ~loc:var_loc {txt = Lident name; loc = var_loc} in
-  let body = mapper.expr mapper (reduce_compose e arg) in
-  Exp.fun_ ~loc:e.pexp_loc Nolabel None pat body
+  let pat = ppat_var ~loc:var_loc {txt = name; loc = var_loc} in
+  let arg = pexp_ident ~loc:var_loc {txt = Lident name; loc = var_loc} in
+  let body = reduce_compose e arg in
+  pexp_fun ~loc:e.pexp_loc Nolabel None pat body
 
-let rewrite_expr mapper e =
+let rewrite_compose e =
   (match e.pexp_desc with
    | Pexp_apply (h, ((Nolabel, x) :: xs)) when classify h <> `Other ->
-      mapper.expr mapper (apply ~loc:e.pexp_loc (reduce_compose h x) xs)
+      Some (apply ~loc:e.pexp_loc (reduce_compose h x) xs)
    | _ ->
       (match classify e with
-       | `Compose -> eta_expand_composition ~is_fw:false mapper e
-       | `Compose_fw -> eta_expand_composition ~is_fw:true mapper e
-       | `Other -> default_mapper.expr mapper e))
+       | `Compose -> Some (eta_expand_composition ~is_fw:false e)
+       | `Compose_fw -> Some (eta_expand_composition ~is_fw:true e)
+       | `Other -> None))
 
-let compose_mapper _config _cookies = {default_mapper with expr = rewrite_expr}
+let rules = [
+  Context_free.Rule.special_function "%" rewrite_compose;
+  Context_free.Rule.special_function "%>" rewrite_compose;
+]
 
-let () = Driver.register ~name:"ppx_compose" ocaml_version compose_mapper
+let () = Driver.register_transformation ~rules "ppx_compose"
