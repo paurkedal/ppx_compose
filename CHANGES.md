@@ -1,3 +1,7 @@
+## v0.2.0 - 2021-10-10
+
+- Migrate to ppxlib.
+
 ## v0.1.0 - 2019-12-19
 
 - Upgrade to OCaml AST 4.10.
