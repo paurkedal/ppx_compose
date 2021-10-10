@@ -1,3 +1,7 @@
+## v0.2.1 - 2021-10-10
+
+- Change license exception to LGPL-3.0-linking-exception.
+
 ## v0.2.0 - 2021-10-10
 
 - Migrate to ppxlib.
